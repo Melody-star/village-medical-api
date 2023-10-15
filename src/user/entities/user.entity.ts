@@ -22,7 +22,7 @@ export class User {
   @Column()
   user_type: number;
 
-  @Column()
+  @Column({ nullable: true })
   avatar: string;
 
   @Column()
@@ -42,7 +42,7 @@ export class User {
 
   @OneToOne(() => MedicalInfo)
   @JoinColumn({ name: "medical_info_id" })
-  medicalInfo: MedicalInfo;
+  medicalInfo: number;
 
   @OneToMany(() => Schedule, schedule => schedule.user)
   schedules: Schedule[];
