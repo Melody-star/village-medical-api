@@ -28,12 +28,12 @@ export class UserService {
     return !existingUser; // 如果找不到用户，用户名唯一
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async getUserInfo(username: string) {
+    return this.userRepository.findOne({ where: { username } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findAll() {
+    return `This action returns all user`;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

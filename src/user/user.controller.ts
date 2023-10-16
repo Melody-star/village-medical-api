@@ -17,7 +17,6 @@ export class UserController {
     if (!isUsernameUnique) {
       throw new BadRequestException("账号已存在");
     }
-    3;
     return this.userService.addUser(createUserDto);
   }
 
@@ -26,10 +25,10 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.userService.findOne(+id);
-  }
+  // @Get(":id")
+  // findOne(@Param("id") id: string) {
+  //   return this.userService.findOne(+id);
+  // }
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
