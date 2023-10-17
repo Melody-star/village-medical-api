@@ -1,6 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { Response } from "./common/response";
+import { HttpFilter } from "./common/filter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +12,8 @@ async function bootstrap() {
   SwaggerModule.setup("/api-docs", app, document);
 
   app.enableCors();
+  app.useGlobalInterceptors(new Response());
+  app.useGlobalFilters(new HttpFilter());
 
   await app.listen(3000);
 }

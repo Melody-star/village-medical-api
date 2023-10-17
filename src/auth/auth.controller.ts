@@ -26,7 +26,7 @@ export class AuthController {
         count: 1
       });
 
-      return { authorization: "Bearer " + newToken, message: "登录成功" };
+      return { authorization: "Bearer " + newToken };
     } else {
       // return { message: "登录失败" };
       throw new HttpException("密码错误", HttpStatus.UNAUTHORIZED);
