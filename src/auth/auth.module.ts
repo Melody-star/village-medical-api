@@ -7,10 +7,12 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "../user/entities/user.entity";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth.guard";
+import { PermissionService } from "../permission/permission.service";
+import { Permission } from "../permission/entities/permission.entity";
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, UserService, {
+  providers: [AuthService, UserService, PermissionService, {
     provide: APP_GUARD,
     useClass: AuthGuard
   }],
@@ -19,7 +21,7 @@ import { AuthGuard } from "./auth.guard";
     signOptions: {
       expiresIn: "7d"
     }
-  }), TypeOrmModule.forFeature([User])]
+  }), TypeOrmModule.forFeature([User, Permission])]
 })
 export class AuthModule {
 }

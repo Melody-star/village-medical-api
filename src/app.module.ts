@@ -18,6 +18,7 @@ import { MessageModule } from "./message/message.module";
 import { ChatSessionModule } from "./chat-session/chat-session.module";
 import { MediaModule } from "./media/media.module";
 import { AuthModule } from "./auth/auth.module";
+import { PermissionModule } from "./permission/permission.module";
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -31,7 +32,7 @@ import { AuthModule } from "./auth/auth.module";
     retryDelay: 500, //重试连接数据库间隔
     retryAttempts: 10,//重试连接数据库的次数
     autoLoadEntities: true //如果为true,将自动加载实体 forFeature()方法注册的每个实体都将自动添加到配置对象的实体数组中
-  }), UserModule, ScheduleModule, HospitalModule, TagModule, PrimaryDepartmentModule, SecondaryDepartmentModule, MedicationReminderModule, AppointmentModule, MedicalInfoModule, PrescriptionModule, NewsModule, HelpCenterModule, MessageModule, ChatSessionModule, MediaModule, AuthModule],
+  }), UserModule, ScheduleModule, HospitalModule, TagModule, PrimaryDepartmentModule, SecondaryDepartmentModule, MedicationReminderModule, AppointmentModule, MedicalInfoModule, PrescriptionModule, NewsModule, HelpCenterModule, MessageModule, ChatSessionModule, MediaModule, AuthModule, PermissionModule],
   controllers: [AppController],
   providers: [AppService]
 })

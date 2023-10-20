@@ -11,7 +11,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup("/api-docs", app, document);
 
-  app.enableCors();
+  app.enableCors({
+    origin: "http://localhost:3001",
+    credentials: true
+  });
+
   app.useGlobalInterceptors(new Response());
   app.useGlobalFilters(new HttpFilter());
 

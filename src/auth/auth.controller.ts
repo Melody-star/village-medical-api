@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, Inject, Param, Patch, Post, Query } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateAuthDto } from "./dto/create-auth.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";
@@ -6,11 +6,12 @@ import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "./dto/login-auth.dto";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Public } from "../public/public.decorator";
+import { PermissionService } from "../permission/permission.service";
 
 @ApiTags("登录")
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {
+  constructor(private readonly authService: AuthService, private readonly permissionService: PermissionService) {
   }
 
   @Inject()
@@ -23,14 +24,29 @@ export class AuthController {
     const result = await this.authService.login(loginDto);
     if (result) {
       const newToken = this.jwtService.sign({
-        count: 1
+        userInfo: result
       });
-
-      return { authorization: "Bearer " + newToken };
+      return { authorization: "Bearer " + newToken, userInfo: result };
     } else {
-      // return { message: "登录失败" };
-      throw new HttpException("密码错误", HttpStatus.UNAUTHORIZED);
+      throw new HttpException("密码错误", 405);
     }
+  }
+
+  @Public()
+  @ApiOperation({ summary: "根据token获取用户信息" })
+  @Get("/findUserByToken")
+  async findUserByToken(@Query("token") token: string) {
+    const decodeToken = this.jwtService.verify(token.slice(7));
+    const userInfo = decodeToken.userInfo;
+    const rols = await this.permissionService.getPermissionByUserId(userInfo.user_id);
+    let arr = [];
+    for (let item of rols) {
+      arr.push(item.name);
+    }
+    return {
+      ...userInfo,
+      roles: arr
+    };
   }
 
   @Post()
@@ -38,6 +54,7 @@ export class AuthController {
     return this.authService.create(createAuthDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.authService.findAll();

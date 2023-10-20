@@ -4,12 +4,14 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { PermissionService } from "../permission/permission.service";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly permissionService: PermissionService
   ) {
   }
 
@@ -28,7 +30,20 @@ export class UserService {
     return !existingUser; // 如果找不到用户，用户名唯一
   }
 
-  async getUserInfo(username: string) {
+  async findOne(id: number) {
+    const userInfo = await this.userRepository.findOne({ where: { user_id: id } });
+    if (userInfo == null) {
+      return "用户不存在";
+    } else {
+      const roles = await this.permissionService.getPermissionByUserId(userInfo.user_id);
+      return {
+        ...userInfo,
+        roles
+      };
+    }
+  }
+
+  getUserInfo(username: string) {
     return this.userRepository.findOne({ where: { username } });
   }
 

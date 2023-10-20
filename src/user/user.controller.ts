@@ -3,6 +3,7 @@ import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Public } from "../public/public.decorator";
 
 @ApiTags("用户接口")
 @Controller("user")
@@ -25,10 +26,12 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  // @Get(":id")
-  // findOne(@Param("id") id: string) {
-  //   return this.userService.findOne(+id);
-  // }
+  @Public()
+  @ApiOperation({ summary: "根据用户ID获取用户信息" })
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.userService.findOne(+id);
+  }
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
