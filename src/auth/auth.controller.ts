@@ -7,11 +7,13 @@ import { LoginDto } from "./dto/login-auth.dto";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Public } from "../public/public.decorator";
 import { PermissionService } from "../permission/permission.service";
+import axios from "axios";
+import { UserService } from "../user/user.service";
 
 @ApiTags("登录")
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly permissionService: PermissionService) {
+  constructor(private readonly authService: AuthService, private readonly permissionService: PermissionService, private readonly userService: UserService) {
   }
 
   @Inject()
@@ -29,6 +31,40 @@ export class AuthController {
       return { authorization: "Bearer " + newToken, userInfo: result };
     } else {
       throw new HttpException("密码错误", 405);
+    }
+  }
+
+  @Public()
+  @ApiOperation({ summary: "微信一键登录" })
+  @Post("wxLogin")
+  async wxLogin(@Body() data: { code, userInfo }) {
+    try {
+      const response = await axios.get("https://api.weixin.qq.com/sns/jscode2session", {
+        params: {
+          appid: "wxa9960a74471f1524",
+          secret: "2e2305791eea7c8933f5b08d08bc45b4",
+          js_code: data.code,
+          grant_type: "authorization_code"
+        }
+      });
+
+      const userInfoRes = await this.userService.getUserInfoByOpenId(response.data.openid);
+
+      if (userInfoRes) {
+        const newToken = this.jwtService.sign({
+          userInfo: userInfoRes
+        });
+        return { authorization: "Bearer " + newToken, userInfo: userInfoRes };
+      } else {
+        return this.userService.addUser({
+          user_type: 0,
+          avatar: data.userInfo.avatarUrl,
+          openid: response.data.openid,
+          username: data.userInfo.nickName
+        });
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

@@ -24,6 +24,7 @@ export class PermissionController {
     return this.permissionService.getPermissionByUserId(userId);
   }
 
+  @ApiOperation({ summary: "获取所有权限列表" })
   @Get()
   findAll() {
     return this.permissionService.findAll();
@@ -34,9 +35,11 @@ export class PermissionController {
     return this.permissionService.findOne(+id);
   }
 
+  @ApiOperation({ summary: "根据用户ID修改用户权限" })
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updatePermissionDto: UpdatePermissionDto) {
-    return this.permissionService.update(+id, updatePermissionDto);
+  update(@Param("id") id: string, @Body("list") list: Array<string>) {
+    console.log(id, list);
+    return this.permissionService.update(+id, list);
   }
 
   @Delete(":id")

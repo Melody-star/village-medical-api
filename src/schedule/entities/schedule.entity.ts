@@ -11,5 +11,5 @@ export class Schedule {
   user: User;
 
   @Column()
-  date: Date;
+  date: string;
 }

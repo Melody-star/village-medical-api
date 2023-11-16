@@ -12,7 +12,7 @@ export class Permission {
   @Column()
   describe: string;
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, user => user.permissions)
   @JoinTable()
   users: User[];
 }

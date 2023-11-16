@@ -1,16 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreatePermissionDto } from "./dto/create-permission.dto";
 import { UpdatePermissionDto } from "./dto/update-permission.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Permission } from "./entities/permission.entity";
+import { User } from "../user/entities/user.entity";
 
 @Injectable()
 export class PermissionService {
 
   constructor(
     @InjectRepository(Permission)
-    private readonly permission: Repository<Permission>
+    private readonly permission: Repository<Permission>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>
   ) {
   }
 
@@ -24,15 +27,22 @@ export class PermissionService {
   }
 
   findAll() {
-    return `This action returns all permission`;
+    return this.permission.find();
   }
 
   findOne(id: number) {
     return `This action returns a #${id} permission`;
   }
 
-  update(id: number, updatePermissionDto: UpdatePermissionDto) {
-    return `This action updates a #${id} permission`;
+  async update(id: number, list: Array<string>) {
+    const user = await this.userRepository.findOne({ where: { user_id: id }, relations: ["permissions"] });
+    if (!user) {
+      throw new NotFoundException("用户未找到");
+    }
+    const permissions = await this.permission.find({ where: { name: In(list) } });
+    user.permissions = permissions;
+    await this.userRepository.save(user);
+    return "修改成功";
   }
 
   remove(id: number) {

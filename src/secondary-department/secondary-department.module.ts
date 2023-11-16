@@ -8,5 +8,6 @@ import { SecondaryDepartment } from "./entities/secondary-department.entity";
   imports:[TypeOrmModule.forFeature([SecondaryDepartment])],
   controllers: [SecondaryDepartmentController],
   providers: [SecondaryDepartmentService],
+  exports: [SecondaryDepartmentService]
 })
 export class SecondaryDepartmentModule {}

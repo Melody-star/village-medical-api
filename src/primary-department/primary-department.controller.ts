@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PrimaryDepartmentService } from './primary-department.service';
 import { CreatePrimaryDepartmentDto } from './dto/create-primary-department.dto';
 import { UpdatePrimaryDepartmentDto } from './dto/update-primary-department.dto';
+import { ApiOperation } from "@nestjs/swagger";
 
 @Controller('primary-department')
 export class PrimaryDepartmentController {
@@ -10,6 +11,12 @@ export class PrimaryDepartmentController {
   @Post()
   create(@Body() createPrimaryDepartmentDto: CreatePrimaryDepartmentDto) {
     return this.primaryDepartmentService.create(createPrimaryDepartmentDto);
+  }
+
+  @ApiOperation({ summary: "根据医院ID获取科室信息" })
+  @Get("getDepartmentById/:id")
+  getDepartmentById(@Param("id") id: string) {
+    return this.primaryDepartmentService.getDepartmentById(+id);
   }
 
   @Get()

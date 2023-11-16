@@ -12,7 +12,7 @@ export class News {
   author: string;
 
   @Column()
-  publish_date: Date;
+  publish_date: string;
 
   @Column()
   content: string;
@@ -20,8 +20,11 @@ export class News {
   @Column()
   type: number;
 
-  @Column()
+  @Column({ nullable: true })
   video_link: string;
+
+  @Column({ nullable: true })
+  images: string;
 
   @Column()
   category: string;

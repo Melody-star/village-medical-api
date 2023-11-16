@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "../../user/entities/user.entity";
 
 @Entity()
 export class MedicalInfo {
@@ -13,4 +14,14 @@ export class MedicalInfo {
 
   @Column()
   name: string;
+
+  @Column()
+  phone: string;
+
+  @Column()
+  address: string;
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User;
 }

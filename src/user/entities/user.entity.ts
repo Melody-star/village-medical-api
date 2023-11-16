@@ -1,22 +1,22 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Schedule } from "../../schedule/entities/schedule.entity";
 import { MedicationReminder } from "../../medication-reminder/entities/medication-reminder.entity";
 import { Appointment } from "../../appointment/entities/appointment.entity";
-import { MedicalInfo } from "../../medical-info/entities/medical-info.entity";
 import { Prescription } from "../../prescription/entities/prescription.entity";
 import { ChatSession } from "../../chat-session/entities/chat-session.entity";
 import { Message } from "../../message/entities/message.entity";
 import { SecondaryDepartment } from "../../secondary-department/entities/secondary-department.entity";
+import { Permission } from "../../permission/entities/permission.entity";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   user_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   account: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column()
@@ -29,6 +29,9 @@ export class User {
   username: string;
 
   @Column({ nullable: true })
+  phone: string;
+
+  @Column({ nullable: true })
   title: string;
 
   @Column({ nullable: true })
@@ -39,10 +42,6 @@ export class User {
 
   @Column({ nullable: true })
   registration_fee: number;
-
-  @OneToOne(() => MedicalInfo)
-  @JoinColumn({ name: "medical_info_id" })
-  medicalInfo: number;
 
   @OneToMany(() => Schedule, schedule => schedule.user)
   schedules: Schedule[];
@@ -68,4 +67,7 @@ export class User {
 
   @OneToMany(() => Message, message => message.sender)
   messages: Message[];
+
+  @ManyToMany(() => Permission, permission => permission.users)
+  permissions: Permission[];
 }
