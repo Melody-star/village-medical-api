@@ -19,7 +19,7 @@ export class PrimaryDepartmentService {
   }
 
   findAll() {
-    return `This action returns all primaryDepartment`;
+    return this.primaryDepartmentResponisy.find({relations:["hospital"]});
   }
 
   findOne(id: number) {

@@ -7,13 +7,15 @@ import { Repository } from "typeorm";
 import { PermissionService } from "../permission/permission.service";
 import { Permission } from "../permission/entities/permission.entity";
 import { Prescription } from "./entities/prescription.entity";
+import { UserService } from "../user/user.service";
 
 @Injectable()
 export class PrescriptionService {
 
   constructor(
     @InjectRepository(Prescription)
-    private readonly prescriptionRepository: Repository<Prescription>
+    private readonly prescriptionRepository: Repository<Prescription>,
+    private readonly userService:UserService
   ) {
   }
 
@@ -36,5 +38,18 @@ export class PrescriptionService {
 
   remove(id: number) {
     return `This action removes a #${id} prescription`;
+  }
+
+  async add(createDto: CreatePrescriptionDto) {
+    const user =  await this.userService.getUserInfoById(+createDto.userId)
+    let a = new Prescription()
+    a.prescription_link = createDto.userPrescription
+    a.user = user
+    return this.prescriptionRepository.save(a)
+  }
+
+  async getPrescriptionByUserId(id: number) {
+    const user = await this.userService.getUserInfoById(+id)
+    return this.prescriptionRepository.find({where:{user:user}})
   }
 }

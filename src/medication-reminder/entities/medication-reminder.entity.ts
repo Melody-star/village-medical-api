@@ -13,14 +13,17 @@ export class MedicationReminder {
   drug_name: string;
 
   @Column()
-  reminder_time: Date;
+  dose:string;
 
   @Column()
-  start_date: Date;
+  reminder_time: string;
+
+  @Column({ nullable: true })
+  start_date: string;
+
+  @Column({ nullable: true })
+  end_date: string;
 
   @Column()
-  end_date: Date;
-
-  @Column()
-  status: number;
+  status: string;
 }

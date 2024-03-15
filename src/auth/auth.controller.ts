@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpException, Inject, Param, Patch, Post, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Query
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateAuthDto } from "./dto/create-auth.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";
@@ -24,6 +36,7 @@ export class AuthController {
   @Post("login")
   async login(@Body() loginDto: LoginDto) {
     const result = await this.authService.login(loginDto);
+
     if (result) {
       const newToken = this.jwtService.sign({
         userInfo: result
@@ -72,17 +85,21 @@ export class AuthController {
   @ApiOperation({ summary: "根据token获取用户信息" })
   @Get("/findUserByToken")
   async findUserByToken(@Query("token") token: string) {
-    const decodeToken = this.jwtService.verify(token.slice(7));
-    const userInfo = decodeToken.userInfo;
-    const rols = await this.permissionService.getPermissionByUserId(userInfo.user_id);
-    let arr = [];
-    for (let item of rols) {
-      arr.push(item.name);
+    try {
+      const decodeToken = this.jwtService.verify(token.slice(7));
+      const userInfo = decodeToken.userInfo;
+      const rols = await this.permissionService.getPermissionByUserId(userInfo.user_id);
+      let arr = [];
+      for (let item of rols) {
+        arr.push(item.name);
+      }
+      return {
+        ...userInfo,
+        roles: arr
+      };
+    } catch (e) {
+      throw new HttpException("Token过期", 401);
     }
-    return {
-      ...userInfo,
-      roles: arr
-    };
   }
 
   @Post()

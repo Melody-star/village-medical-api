@@ -1,1 +1,4 @@
-export class CreatePrescriptionDto {}
+export class CreatePrescriptionDto {
+  userPrescription: string;
+  userId: string;
+}

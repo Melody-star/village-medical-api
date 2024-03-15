@@ -49,43 +49,40 @@ export class AppointmentService {
     const result = await this.appointmentRepository.save(appointment);
 
     // 发送订阅消息
-    await this.sendSubscribe(userInfo.openid, hospial.hospital_name, medicalInfo.name, createAppointmentDto.appointmentTime);
-
-    return result;
-  }
-
-  // 发送订阅消息
-  async sendSubscribe(openid, hospialName, name, time) {
-    // 获取access_token
-    const res = await axios.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxa9960a74471f1524&secret=2e2305791eea7c8933f5b08d08bc45b4");
-
-    const access_token = res.data.access_token;
     const template_id = "NsWDcXJNVaJ8U2UxYZCuzFpJkurt61434lAtLg-bFRk";
-    const touser = openid;
     const data = {
       "name1": {
-        "value": name
+        "value": medicalInfo.name
       },
       "date2": {
-        "value": time
+        "value": createAppointmentDto.appointmentTime
       },
       "thing9": {
-        "value": hospialName
+        "value": hospial.hospital_name
       },
       "thing4": {
         "value": "请及时就诊"
       }
     };
+    await this.sendSubscribe(userInfo.openid, data, template_id);
+    return result;
+  }
+
+  // 发送订阅消息
+  async sendSubscribe(openid, data, template_id) {
+    // 获取access_token
+    const res = await axios.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxa9960a74471f1524&secret=2e2305791eea7c8933f5b08d08bc45b4");
+    const access_token = res.data.access_token;
 
     const subRes = await axios.post("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=" + access_token,
       {
-        "touser": touser,
+        "touser": openid,
         "template_id": template_id,
         "page": "index",
         "data": data
       });
 
-    console.log("发送订阅消息结果", subRes);
+    console.log("发送订阅消息结果", subRes.statusText);
   }
 
   // 用于生成医院单号

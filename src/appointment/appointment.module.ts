@@ -12,5 +12,6 @@ import { MedicalInfoModule } from "../medical-info/medical-info.module";
   imports: [TypeOrmModule.forFeature([Appointment]), UserModule, HospitalModule, SecondaryDepartmentModule, MedicalInfoModule],
   controllers: [AppointmentController],
   providers: [AppointmentService],
+  exports:[AppointmentService]
 })
 export class AppointmentModule {}

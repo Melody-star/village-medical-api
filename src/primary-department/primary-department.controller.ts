@@ -3,6 +3,8 @@ import { PrimaryDepartmentService } from './primary-department.service';
 import { CreatePrimaryDepartmentDto } from './dto/create-primary-department.dto';
 import { UpdatePrimaryDepartmentDto } from './dto/update-primary-department.dto';
 import { ApiOperation } from "@nestjs/swagger";
+import { InjectRepository } from "@nestjs/typeorm";
+import { PrimaryDepartment } from "./entities/primary-department.entity";
 
 @Controller('primary-department')
 export class PrimaryDepartmentController {
@@ -19,9 +21,10 @@ export class PrimaryDepartmentController {
     return this.primaryDepartmentService.getDepartmentById(+id);
   }
 
+  @ApiOperation({ summary: "获取所有科室信息" })
   @Get()
   findAll() {
-    return this.primaryDepartmentService.findAll();
+    return this.primaryDepartmentService.findAll()
   }
 
   @Get(':id')

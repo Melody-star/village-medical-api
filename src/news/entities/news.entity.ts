@@ -14,7 +14,7 @@ export class News {
   @Column()
   publish_date: string;
 
-  @Column()
+  @Column('text')
   content: string;
 
   @Column()
@@ -28,4 +28,7 @@ export class News {
 
   @Column()
   category: string;
+
+  @Column()
+  is_hot: string;
 }

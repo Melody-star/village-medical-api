@@ -21,15 +21,15 @@ export class MulterController {
   @Post("upload")
   @ApiOperation({ summary: "上传文件" })
   @UseInterceptors(FileInterceptor("file"))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Query("userId") userId: string) {
-    const key = `uploads/${file.originalname}`;
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+
+    let key = ""
+    if (file.originalname == undefined){
+       key = `uploads/9082374`;
+    }else {
+       key = `uploads/${file.originalname}`;
+    }
     const result = await this.multerService.uploadFile(key, file.buffer);
-
-    // const updateUserDto:UpdateUserDto = <UpdateUserDto>{
-    //   avatar: (result as { url: string }).url
-    // }
-
-    // await this.userService.update(Number(userId),updateUserDto)
     return result;
   }
 }

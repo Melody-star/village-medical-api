@@ -8,9 +8,11 @@ import { Public } from "../public/public.decorator";
 @ApiTags("医院接口")
 @Controller("hospital")
 export class HospitalController {
+
   constructor(private readonly hospitalService: HospitalService) {
   }
 
+  @ApiOperation({summary:"添加医院信息"})
   @Post()
   create(@Body() createHospitalDto: CreateHospitalDto) {
     return this.hospitalService.create(createHospitalDto);
@@ -34,6 +36,7 @@ export class HospitalController {
     return this.hospitalService.findOne(+id);
   }
 
+  @ApiOperation({summary:"根据医院ID更新医院信息"})
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateHospitalDto: UpdateHospitalDto) {
     return this.hospitalService.update(+id, updateHospitalDto);

@@ -18,8 +18,14 @@ export class HospitalService {
     return this.hospitalRepository.findOne({ where: { hospital_name: name } });
   }
 
-  create(createHospitalDto: CreateHospitalDto) {
-    return "This action adds a new hospital";
+  async create(createHospitalDto: CreateHospitalDto) {
+    let hosptal = new Hospital();
+    hosptal.hospital_name = createHospitalDto.name;
+    hosptal.hospital_city = createHospitalDto.city;
+    hosptal.hospital_address = createHospitalDto.address;
+    hosptal.hospital_image = createHospitalDto.image;
+    hosptal.hospital_level = createHospitalDto.level;
+    return await this.hospitalRepository.save(hosptal);
   }
 
   findAll() {
@@ -30,12 +36,18 @@ export class HospitalService {
     return `This action returns a #${id} hospital`;
   }
 
-  update(id: number, updateHospitalDto: UpdateHospitalDto) {
-    return `This action updates a #${id} hospital`;
+  async update(id: number, updateHospitalDto: UpdateHospitalDto) {
+    const hospital = await this.hospitalRepository.findOne({ where: { hospital_id: id } });
+    hospital.hospital_level = updateHospitalDto.level
+    hospital.hospital_image = updateHospitalDto.image
+    hospital.hospital_address = updateHospitalDto.address
+    hospital.hospital_name = updateHospitalDto.name
+    hospital.hospital_city = updateHospitalDto.city
+    return this.hospitalRepository.save(hospital)
   }
 
   remove(id: number) {
-    return `This action removes a #${id} hospital`;
+    return this.hospitalRepository.delete({ hospital_id: id });
   }
 
   getHospitalByCity(cityName: any) {

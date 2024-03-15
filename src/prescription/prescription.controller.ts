@@ -16,6 +16,12 @@ export class PrescriptionController {
   ) {
   }
 
+  @ApiOperation({summary:"根据用户ID添加处方信息"})
+  @Post()
+  add(@Body() createDto:CreatePrescriptionDto) {
+    this.prescriptionService.add(createDto);
+  }
+
   @ApiOperation({ summary: "获取所有处方信息" })
   @Get()
   findAll() {
@@ -26,5 +32,12 @@ export class PrescriptionController {
   @Get("getPrescriptionById")
   getPrescriptionById(@Query("id") id: number) {
     return this.prescriptionService.findOne(id);
+  }
+
+  @ApiOperation({ summary: "根据用户ID获取处方信息" })
+  @Get("getPrescriptionByUserId")
+  getPrescriptionByUserId(@Query("id") id: number) {
+    console.log(id);
+    return this.prescriptionService.getPrescriptionByUserId(id);
   }
 }

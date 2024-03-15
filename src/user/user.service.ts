@@ -48,8 +48,8 @@ export class UserService {
     }
   }
 
-  getUserInfo(username: string) {
-    return this.userRepository.findOne({ where: { username } });
+  getUserInfo(account: string) {
+    return this.userRepository.findOne({ where: { account } });
   }
 
   getUserInfoById(id: number) {
@@ -79,7 +79,7 @@ export class UserService {
     if (type == 4) {
       return await this.userRepository.createQueryBuilder("user").where("user.user_type IN (:...types)", { types: [0, 2] }).getMany();
     } else {
-      return await this.userRepository.find({ where: { user_type: type } });
+      return await this.userRepository.find({ where: { user_type: type }, relations: ["secondaryDepartment"] });
     }
   }
 
